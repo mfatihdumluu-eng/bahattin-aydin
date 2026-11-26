@@ -85,4 +85,4 @@ const head=$('.pagehero');head.classList.add('practice-hero','practice-'+i);
 }
 if(p==='contact'&&$('#topic')){const t=new URLSearchParams(location.search).get('topic');if(t!==null&&/^\d$/.test(t)&&Number(t)<d.services.length)$('#topic').selectedIndex=Number(t)}
 
-if(!document.querySelector('script[src="editorial.js"]')){const e=document.createElement('script');e.src='editorial.js';document.head.append(e);}
+
