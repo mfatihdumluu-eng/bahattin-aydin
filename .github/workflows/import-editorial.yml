@@ -1,0 +1,36 @@
+name: Import coordinated artwork
+on:
+  push:
+    paths:
+      - '.github/workflows/import-editorial.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          set -eu
+          mkdir -p assets
+          curl -fL --retry 2 'https://at.adobe.com/LKuHzaFcF4QPLXlp' -o assets/editorial-0.png
+          curl -fL --retry 2 'https://at.adobe.com/rfPYnAr2M73oq6RY' -o assets/editorial-1.png
+          curl -fL --retry 2 'https://at.adobe.com/ouMnEPV9scbc2Xly' -o assets/editorial-2.png
+          curl -fL --retry 2 'https://at.adobe.com/qr0YGbwvNv7RquVs' -o assets/editorial-3.png
+          curl -fL --retry 2 'https://at.adobe.com/mMTj3zpQU6ptzKG0' -o assets/editorial-4.png
+          curl -fL --retry 2 'https://at.adobe.com/t3xwfBmPgPuSAqaw' -o assets/editorial-5.png
+          curl -fL --retry 2 'https://at.adobe.com/30CX3aIl8GWCvhZn' -o assets/editorial-6.png
+          curl -fL --retry 2 'https://at.adobe.com/HFYEY5qhQHYkwxFu' -o assets/editorial-7.png
+          python - <<'PY'
+          from pathlib import Path
+          for p in Path('assets').glob('editorial-*.png'):
+              assert p.read_bytes()[:8] == bytes.fromhex('89504e470d0a1a0a'), str(p)
+          PY
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/editorial-*.png
+          git commit -m "Install coordinated editorial artwork"
+          git pull --rebase
+          git push
