@@ -68,3 +68,12 @@ const keys=['quickKicker','quickTitle','focusKicker','focusTitle','focusText','a
 const q=$('#quick-options');if(q)q.innerHTML=[0,1,2,4].map((n,x)=>'<a href="'+link(slugs[n])+'"><span>'+ico(n)+'</span><b>'+esc(v[10+x])+'</b><small>↗</small></a>').join('');
 const fp=$('#focus-points');if(fp)fp.innerHTML=v.slice(5,8).map(x=>'<div><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg><span>'+esc(x)+'</span></div>').join('');
 }
+
+if(p==='home'&&$('#quick-options')&&$('#quick-next')){
+const track=$('#quick-options'),prev=$('#quick-prev'),next=$('#quick-next'), reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+track.innerHTML=d.services.map((s,n)=>'<a href="'+link(slugs[n])+'"><span>'+ico(n)+'</span><b>'+esc(s[0])+'</b><small>↗</small></a>').join('');
+prev.setAttribute('aria-label',({nl:'Vorige',tr:'Önceki',en:'Previous'}[l]));next.setAttribute('aria-label',({nl:'Volgende',tr:'Sonraki',en:'Next'}[l]));
+track.setAttribute('aria-label',({nl:'Rechtsgebieden',tr:'Hukuk alanları',en:'Practice areas'}[l]));
+const move=dir=>{const step=track.firstElementChild.getBoundingClientRect().width+12,max=track.scrollWidth-track.clientWidth;let target=track.scrollLeft+dir*step;if(dir>0&&track.scrollLeft>=max-3)target=0;else if(dir<0&&track.scrollLeft<=3)target=max;track.scrollTo({left:target,behavior:reduced?'auto':'smooth'})};
+prev.onclick=()=>move(-1);next.onclick=()=>move(1);track.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();move(e.key==='ArrowRight'?1:-1)}});
+}
