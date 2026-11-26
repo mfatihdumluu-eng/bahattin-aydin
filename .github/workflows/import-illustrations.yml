@@ -1,0 +1,39 @@
+name: Import website illustrations
+on:
+  push:
+    paths:
+      - '.github/workflows/import-illustrations.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch and validate public website artwork
+        run: |
+          set -eu
+          mkdir -p assets
+          curl -fL --retry 2 'https://at.adobe.com/R5nxp4PZDVLEc1Jv' -o assets/amsterdam.png
+          curl -fL --retry 2 'https://at.adobe.com/Yl3CAGmbaSp4smdg' -o assets/work.png
+          curl -fL --retry 2 'https://at.adobe.com/y1zNHfMLOFEvk5y0' -o assets/family.png
+          curl -fL --retry 2 'https://at.adobe.com/Djuv4wdFFQyH30hB' -o assets/consultation.png
+          python - <<'PY'
+          import pathlib
+          for p in pathlib.Path('assets').glob('*.png'):
+              assert p.read_bytes()[:8] == bytes.fromhex('89504e470d0a1a0a'), str(p)
+          PY
+      - name: Activate illustrations and commit
+        run: |
+          cat >> style.css <<'CSS'
+          .home-guide .feature-main .feature-image{background-image:linear-gradient(0deg,#10252e 5%,#10252e15 75%),url('assets/amsterdam.png')}
+          .home-guide .feature-light{background-image:linear-gradient(90deg,#f1f2ef 0%,#f1f2ef 48%,#f1f2ef00 100%),url('assets/work.png')}
+          .home-guide .feature-sand{background-image:linear-gradient(90deg,#eee4d3 0%,#eee4d3 48%,#eee4d300 100%),url('assets/family.png')}
+          .home-focus .focus-photo{background-image:url('assets/consultation.png')}
+          CSS
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/amsterdam.png assets/work.png assets/family.png assets/consultation.png style.css
+          git commit -m "Install custom editorial illustrations"
+          git push
