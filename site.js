@@ -27,3 +27,16 @@ if(i>=0&&$('#articleBody'))$('#articleBody').textContent=pd.topics[i]+'\n\n'+d.c
 if(i>=0&&$('#pageIntro'))$('#pageIntro').textContent=pd.topics[i];
 if(document.querySelector('.copy [data-t="bio2"]')){const para=document.querySelector('.copy [data-t="bio2"]');for(const s of [pd.vol,pd.register]){const e=document.createElement('p');e.textContent=s;para.after(e)}}
 if(p==='contact'&&$('#contact .wrap > div')){const e=document.createElement('div');e.className='office-details';e.innerHTML='<p><strong>'+pd.office+'</strong><br>Spuistraat 8<br>1012 TS Amsterdam</p><p><strong>'+pd.post+'</strong><br>Postbus 11232<br>1001 GE Amsterdam</p><p>'+pd.fax+': 020 665 86 99</p><p>'+pd.station+'</p><p>'+pd.walk+'</p><a href="https://www.google.com/maps/search/?api=1&query=Spuistraat+8+1012+TS+Amsterdam" rel="noopener" target="_blank">'+({nl:'Route bekijken',tr:'Yol tarifi',en:'Directions'}[l])+' ↗</a>';$('#contact .wrap > div').append(e)}
+
+const refinedIcons=[
+'<path d="M6 3h13a1 1 0 0 1 1 1v16H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path d="M8 3v17"/><circle cx="14" cy="10" r="3"/><path d="M11 10h6m-3-3v6m-3 3h6"/>',
+'<circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18M5.5 7h13M5.5 17h13"/>',
+'<rect x="3" y="7" width="18" height="13" rx="3"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12c5 3 13 3 18 0M12 12v3"/>',
+'<path d="M12 3c2 2 5 3 8 4v5c0 4.5-3.5 7.5-8 9-4.5-1.5-8-4.5-8-9V7c3-1 6-2 8-4Z"/><path d="m8.5 12 2.5 2.5 4.5-5"/>',
+'<path d="M7 3h7l5 5v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z M14 3v5h5M9 12h6M9 16h6"/>',
+'<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5a4 4 0 1 0 0 7M7 11h7M7 13.5h6"/>'];
+document.querySelectorAll('.service-icon').forEach((el,n)=>{el.innerHTML='<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round">'+refinedIcons[n]+'</svg>';});
+document.querySelectorAll('.service .num').forEach(el=>el.remove());
+document.querySelectorAll('[data-t="profile"]').forEach(el=>el.textContent=({nl:'Meer over Bahattin',tr:'Bahattin Aydın hakkında',en:'More about Bahattin'}[l]));
+document.querySelectorAll('.portrait img').forEach(img=>{img.addEventListener('error',()=>{img.hidden=true;img.parentElement.classList.add('portrait-fallback')});if(img.complete&&!img.naturalWidth){img.hidden=true;img.parentElement.classList.add('portrait-fallback')}});
+if('IntersectionObserver' in window&&!matchMedia('(prefers-reduced-motion: reduce)').matches){const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('arrived');observer.unobserve(e.target)}}),{threshold:.12});document.querySelectorAll('.service,.step,.portrait,.copy').forEach(e=>{e.classList.add('reveal');observer.observe(e)});}
